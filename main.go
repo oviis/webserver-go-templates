@@ -41,7 +41,7 @@ func main() {
 		)
 	})
 
-	e.GET("/helloworld", func(c echo.Context) error {
+	e.GET("/", func(c echo.Context) error {
 		return c.HTML(
 			http.StatusOK,
 			"<h1>Hello, Ovi, have a good day!<h1><br><strong>Hello, World!</strong>",
@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// Route => handler
-	e.GET("/", handler.HomeHandler)
+	e.GET("/home", handler.HomeHandler)
 	e.GET("/impressum", handler.ImpressumHandler)
 
 	e.Logger.Fatal(e.Start(":1323"))

@@ -6,10 +6,11 @@ import (
 	"github.com/labstack/echo"
 )
 
+//HomeHandler can be called as a handler
 func HomeHandler(c echo.Context) error {
+
 	return c.Render(http.StatusOK, "home.html", map[string]interface{}{
 		"name": "Home",
-		"msg":  "Hello Ovi, Hello World!",
+		"msg":  "this is the Home of the Website!",
 	})
-
 }
