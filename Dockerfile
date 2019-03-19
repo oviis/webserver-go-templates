@@ -17,4 +17,5 @@ USER deployapp
 RUN export GO111MODULE=on
 RUN go build .
 
+EXPOSE 1323
 CMD ["./webserver-go-templates"]
