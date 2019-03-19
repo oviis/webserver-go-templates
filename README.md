@@ -8,12 +8,19 @@ This playground is based on
 
 # **Still work in progress**
 
+# Requirements 
+* Golang > 1.12
+
 # Installation
-* this project is installed over the GOlang dependency Tool, for more information , please follow this [Golang Dep](https://blog.boatswain.io/post/manage-go-dependencies-using-dep/)
+* this project is installed with use of the GOlang module Tool, for more information , please follow this link [Golang Modules](https://github.com/golang/go/wiki/Modules)
 
 ```bash
-##install golang dep, on mac OS
-brew install dep
-##run the dependency fetching
-dep init
+##no use of GOPATH and act as a project outside of the GOPATH/src 
+export GO111MODULE=on
+##run the programm
+go run main.go
+##build the binary
+go build .
+#run ober the binary
+./webserver-go-templates
 ```
