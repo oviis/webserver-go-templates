@@ -15,7 +15,7 @@ This playground is based on
 * this project is installed with use of the GOlang module Tool, for more information , please follow this link [Golang Modules](https://github.com/golang/go/wiki/Modules)
 
 ```bash
-##no use of GOPATH and act as a project outside of the GOPATH/src 
+##no use of GOPATH and act as a project outside of the GOPATH/src
 export GO111MODULE=on
 ##run the programm
 go run main.go
@@ -25,5 +25,5 @@ go build .
 ./webserver-go-templates
 ```
 
-# Installation on minishift
+# Installation on minishift / openshift
 go to the [README-minishift](./minishift/README.md)
