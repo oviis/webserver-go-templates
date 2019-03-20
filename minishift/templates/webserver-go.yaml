@@ -86,23 +86,41 @@ objects:
             strategy: 
                 jenkinsPipelineStrategy:
                     jenkinsfile: |-
-                        try {
-                            timeout(time: 20, unit: 'MINUTES') {
-                                node('golang') {
-                                    stage('build') {
-                                        openshiftBuild(buildConfig: '${PROJECT_NAME}', showBuildLogs: 'true')
+                        def final String ID  = UUID.randomUUID().toString()
+                        def final String POD = "golang-${ID}"
+                            // Podtemplate with maven container from docker hub
+                            podTemplate(
+                                label: POD, name: "test-golang-${ID}",
+                                cloud: 'openshift',
+                                serviceAccount: 'jenkins',
+                                containers: [
+                                    // Connectivity to jenkins
+                                    containerTemplate(name: 'jnlp',
+                                        workingDir: '/tmp',
+                                        image: 'jenkins/jnlp-slave:3.19-1',
+                                        args: '${computer.jnlpmac} ${computer.name}'
+                                    ),
+                                    containerTemplate(name: 'golang',
+                                        workingDir: '/tmp',
+                                        command: 'tail -f /dev/null',
+                                        image: 'golang:1.12.1-alpine3.9'
+                                    )
+                                ]
+                            )
+                        {
+
+                            node(POD) {
+                                    git poll: true, url: '${SOURCE_REPOSITORY_URL}'
+                                    container('golang'){
+                                        stage('build') {
+                                            openshiftBuild(buildConfig: '${PROJECT_NAME}', showBuildLogs: 'true')
+                                        }
+                                        stage('deploy') {
+                                            openshiftDeploy(deploymentConfig: '${PROJECT_NAME}')
+                                        }
                                     }
-                                    stage('deploy') {
-                                        openshiftDeploy(deploymentConfig: '${PROJECT_NAME}')
-                                    }
-                                    }
-                              }
-                            } catch (err) {
-                                echo "in catch block"
-                                echo "Caught: ${err}"
-                                currentBuild.result = 'FAILURE'
-                                throw err
                             }
+                        }
                 type: JenkinsPipeline          
             triggers:
             - github:
