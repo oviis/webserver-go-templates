@@ -24,3 +24,6 @@ go build .
 #run ober the binary
 ./webserver-go-templates
 ```
+
+# Installation on minishift
+go to the [README-minishift](./minishift/README.md)

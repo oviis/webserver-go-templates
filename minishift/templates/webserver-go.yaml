@@ -1,20 +1,20 @@
 kind: Template
 apiVersion: v1
 metadata:
-    name: echo-example
+    name: ${PROJECT_NAME}
     annotations:
         description: 'An example ECHO (https://echo.labstack.com//) application written in Golang'
         tags: 'quickstart,golang'
         iconClass: icon-go-gopher
 labels:
-    template: echo-example
-    app: echo-example
+    template: ${PROJECT_NAME}
+    app: ${PROJECT_NAME}
 objects:
     - 
         kind: Service
         apiVersion: v1
         metadata:
-            name: echo-example
+            name: ${PROJECT_NAME}
             annotations:
                 description: Exposes and load balances the application pods
         spec:
@@ -24,29 +24,29 @@ objects:
                     port: 1323
                     targetPort: 1323
             selector:
-                name: echo-example
+                name: ${PROJECT_NAME}
     - 
         kind: Route
         apiVersion: v1
         metadata:
-            name: echo-example
+            name: ${PROJECT_NAME}
         spec:
             host: '${APPLICATION_DOMAIN}'
             to:
                 kind: Service
-                name: echo-example
+                name: ${PROJECT_NAME}
     - 
         kind: ImageStream
         apiVersion: v1
         metadata:
-            name: echo-example
+            name: ${PROJECT_NAME}
             annotations:
                 description: Keeps track of changes in the application image
     - 
         kind: BuildConfig
         apiVersion: v1
         metadata:
-            name: echo-example
+            name: ${PROJECT_NAME}
             annotations:
                 description: Defines how to build the application
         spec:
@@ -61,7 +61,7 @@ objects:
             output:
                 to:
                     kind: ImageStreamTag
-                    name: 'echo-example:latest'
+                    name: '${PROJECT_NAME}:latest'
             triggers:
                 - 
                     type: ConfigChange
@@ -69,11 +69,51 @@ objects:
                     type: GitHub
                     github:
                         secret: '${GITHUB_WEBHOOK_SECRET}'
+    -
+        kind: BuildConfig
+        apiVersion: v1
+        metadata:
+            name: "${PROJECT_NAME}-jenkins"
+            annotations:
+            description: Trigger a Jenkins build when push to the repository
+        spec:
+            source:
+            type: Git
+            git:
+                uri: "${SOURCE_REPOSITORY_URL}"
+                ref: "${SOURCE_REPOSITORY_REF}"
+            contextDir: "${CONTEXT_DIR}"
+            strategy: 
+                jenkinsPipelineStrategy:
+                    jenkinsfile: |-
+                        try {
+                            timeout(time: 20, unit: 'MINUTES') {
+                                node('golang') {
+                                    stage('build') {
+                                        openshiftBuild(buildConfig: '${PROJECT_NAME}', showBuildLogs: 'true')
+                                    }
+                                    stage('deploy') {
+                                        openshiftDeploy(deploymentConfig: '${PROJECT_NAME}')
+                                    }
+                                    }
+                              }
+                            } catch (err) {
+                                echo "in catch block"
+                                echo "Caught: ${err}"
+                                currentBuild.result = 'FAILURE'
+                                throw err
+                            }
+                type: JenkinsPipeline          
+            triggers:
+            - github:
+                secret: "${GITHUB_WEBHOOK_SECRET}"
+              type: GitHub
+
     - 
         kind: DeploymentConfig
         apiVersion: v1
         metadata:
-            name: echo-example
+            name: ${PROJECT_NAME}
             annotations:
                 description: Defines how to deploy the application server
         spec:
@@ -85,10 +125,10 @@ objects:
                     imageChangeParams:
                         automatic: true
                         containerNames:
-                            - echo-example
+                            - ${PROJECT_NAME}
                         from:
                             kind: ImageStreamTag
-                            name: 'echo-example:latest'
+                            name: '${PROJECT_NAME}:latest'
                 - 
                     type: ConfigChange
                     type: Github
@@ -96,17 +136,17 @@ objects:
                         secret: "${GITHUB_WEBHOOK_SECRET}"
             replicas: 1
             selector:
-                name: echo-example
+                name: ${PROJECT_NAME}
             template:
                 metadata:
-                    name: echo-example
+                    name: ${PROJECT_NAME}
                     labels:
-                        name: echo-example
+                        name: ${PROJECT_NAME}
                 spec:
                     containers:
                         - 
-                            name: echo-example
-                            image: echo-example
+                            name: ${PROJECT_NAME}
+                            image: ${PROJECT_NAME}
                             ports:
                                 - 
                                     containerPort: 8080
@@ -130,3 +170,7 @@ parameters:
         description: Github trigger secret.  A difficult to guess string encoded as part of the webhook URL.  Not encrypted.
         generate: expression
         from: '[a-zA-Z0-9]{40}'
+    -
+        name: PROJECT_NAME
+        description: will be the Project name
+        value: echo-example
