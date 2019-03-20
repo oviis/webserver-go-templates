@@ -44,7 +44,7 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.HTML(
 			http.StatusOK,
-			"<h1>Hello, Ovi, have a good day!<h1><br><strong>Hello, World!</strong>",
+			"<h1>Hello, Ovi, have a good day!<h1><br><strong>Hello, spring day :)!</strong>",
 		)
 	})
 
