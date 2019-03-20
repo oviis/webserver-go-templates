@@ -16,12 +16,14 @@ brew install openshift-cli
 * ImageStream
 * BuildConfig
 * DeploymentConfig
+* JenkinsPipeline
 
-1. first of all fork a copy of webserver-go-templates
+1. to deploy this to your cluster, fork a copy of this repo webserver-go-templates
 
 2. you can deploy all of this with following template and command
 ```bash
-#this will deploy every object and parameter, change the parameter to fit your environment
+#this will deploy every object and parameter, 
+#change the parameter to fit your environment
 $ oc new-app templates/webserver-go.yaml -p SOURCE_REPOSITORY_URL=https://github.com/<yourusername>/webserver-go-templates -p APPLICATION_DOMAIN=echo-example.<your-private-minishift-ip>.nip.io
 ```
 
