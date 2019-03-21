@@ -10,6 +10,14 @@ brew cask install minishift
 brew install openshift-cli
 ```
 
+# First of all, we need to initialize the environment for deploying the objects
+* run the cicd-golang script, or all the script commands by hand, they are not so many
+* at the end the script will wait until the jenkins master deployment will be available, please be patient it could take about 5-6minutes
+```bash 
+$ ./cicd-golang.sh
+````
+* this script will initialize a minishift project called cicd-golang and a jenkins-ephemeral master deployment
+
 # Deployment of following objects in minishift
 * Service
 * Route
