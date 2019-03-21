@@ -57,6 +57,7 @@ oc logs -f bc/echo-example
 * start the pipeline, this will create a Docker Image and will deploy the go webserver.
 * start to adapt the code to fit your needs
 * start the pipeline, all the changes should be deployed within 1-2minutes and your changes can be seen after the pipeline run successfully
+* HAPPY CODING!  :-)
 
 
 5. Housekeeping, deleting the whole objects, from your minishift cluster
