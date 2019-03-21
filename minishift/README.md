@@ -44,7 +44,13 @@ echo-example    echo-example.192.168.99.100.nip.io
 oc logs -f bc/echo-example
 ````
 
-4. Housekeeping, deleting the whole objects
+4. Development Workflow, will be:
+* go to your Jenkins Master and you will see a deployment pipeline, that was already deployed for this project. Tipp!, you can use this to every golang Project that you have! You only need to change the 2 parameters from step 2!
+* start the pipeline, this will create a Docker Image and will deploy the go webserver.
+* start to adapt the code to fit your needs
+* start the pipeline, all the changes should be deployed within 1-2minutes and your changes can be seen after the pipeline run successfully
+
+4. Housekeeping, deleting the whole objects, from your minishift cluster
 ```bash
 oc delete all --selector app=echo-example
 ```
