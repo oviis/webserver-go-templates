@@ -58,7 +58,7 @@ func main() {
 	// Instantiate a template registry with an array of template set
 	// Ref: https://gist.github.com/rand99/808e6e9702c00ce64803d94abff65678
 	templates := make(map[string]*template.Template)
-	templates["impressum.html"] = template.Must(template.ParseFiles("views/impressum.html", "views/base.html"))
+	templates["pagetemplate.html"] = template.Must(template.ParseFiles("views/pagetemplate.html", "views/base.html"))
 	e.Renderer = &TemplateRegistry{
 		templates: templates,
 	}

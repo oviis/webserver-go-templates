@@ -9,7 +9,7 @@ import (
 //ImpressumHandler can be called as a handler
 func ImpressumHandler(c echo.Context) error {
 
-	return c.Render(http.StatusOK, "impressum.html", map[string]interface{}{
+	return c.Render(http.StatusOK, "pagetemplate.html", map[string]interface{}{
 		"name": "Impressum",
 		"msg":  "All about this site!",
 	})
