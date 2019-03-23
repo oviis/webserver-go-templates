@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/labstack/gommon/log"
+
 	// High minimalist GO web framework https://echo.labstack.com/
 	"github.com/labstack/echo"
 
@@ -29,6 +31,11 @@ func (t *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c 
 
 func main() {
 	e := echo.New()
+
+	if l, ok := e.Logger.(*log.Logger); ok {
+		l.SetHeader("${time_rfc3339} ${level}")
+	}
+
 	e.GET("/hello-world", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
@@ -41,7 +48,7 @@ func main() {
 		)
 	})
 
-	e.GET("/", func(c echo.Context) error {
+	e.GET("/hello", func(c echo.Context) error {
 		return c.HTML(
 			http.StatusOK,
 			"<h1>Hello, Ovi, have a good day!<h1><br><strong>Hello, spring day, shiny day :-)!</strong>",
@@ -51,14 +58,13 @@ func main() {
 	// Instantiate a template registry with an array of template set
 	// Ref: https://gist.github.com/rand99/808e6e9702c00ce64803d94abff65678
 	templates := make(map[string]*template.Template)
-	templates["home.html"] = template.Must(template.ParseFiles("views/home.html", "views/base.html"))
 	templates["impressum.html"] = template.Must(template.ParseFiles("views/impressum.html", "views/base.html"))
 	e.Renderer = &TemplateRegistry{
 		templates: templates,
 	}
 
 	// Route => handler
-	e.GET("/home", handler.HomeHandler)
+	e.GET("/", handler.HomeHandler)
 	e.GET("/impressum", handler.ImpressumHandler)
 
 	e.Logger.Fatal(e.Start(":1323"))
