@@ -88,7 +88,7 @@ objects:
                     jenkinsfile: |-
                         def final String ID  = UUID.randomUUID().toString()
                         def final String POD = "golang-${ID}"
-                            // Podtemplate with maven container from docker hub
+                            // Podtemplate for a software stack, in this case only jnlp and golang container from dockerhub 
                             podTemplate(
                                 label: POD, name: "test-golang-${ID}",
                                 cloud: 'openshift',
@@ -100,6 +100,7 @@ objects:
                                         image: 'jenkins/jnlp-slave:3.19-1',
                                         args: '${computer.jnlpmac} ${computer.name}'
                                     ),
+                                    //golang for building the application
                                     containerTemplate(name: 'golang',
                                         workingDir: '/tmp',
                                         command: 'tail -f /dev/null',
@@ -181,7 +182,7 @@ parameters:
         description: Set this to the relative path to your project if it is not in the root of your repository
     - 
         name: APPLICATION_DOMAIN
-        description: The exposed hostname that will route to the Beego service
+        description: The exposed hostname that will route to the webserver service
         value: echo-example.192.168.99.100.nip.io
     - 
         name: GITHUB_WEBHOOK_SECRET
